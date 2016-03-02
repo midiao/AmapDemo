@@ -4,12 +4,16 @@ package com.cb8695.amapdemo;
  * Created by cb8695 on 2016/3/1.
  */
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.cb8695.amapdemo.util.TTSController;
 import com.cb8695.amapdemo.util.Utils;
 
 import java.util.HashSet;
@@ -27,6 +31,11 @@ public class ExampleAppWidgetProvider extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             idsSet.add(appWidgetId);
         }
+        Intent clickIntent = new Intent(Utils.ACTION_CLICK);
+        PendingIntent pending = PendingIntent.getBroadcast(context, 0, clickIntent, 0);
+        RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.app_widget);
+        remoteView.setOnClickPendingIntent(R.id.directionImage, pending);
+        appWidgetManager.updateAppWidget(appWidgetIds, remoteView);
     }
 
     @Override
@@ -34,6 +43,8 @@ public class ExampleAppWidgetProvider extends AppWidgetProvider {
         final String action = intent.getAction();
         if (action.equals(Utils.ACTION_UPDATE_ALL)) {
             updateAllAppWidgets(context, AppWidgetManager.getInstance(context), idsSet, intent);
+        } else if (action.equals(Utils.ACTION_CLICK)) {
+            context.startActivity(Utils.getAppOpenIntentByPackageName(context, "com.cb8695.amapdemo"));
         }
         super.onReceive(context, intent);
     }
@@ -64,7 +75,7 @@ public class ExampleAppWidgetProvider extends AppWidgetProvider {
             } else if (iconType == 3) {
                 remoteView.setTextViewText(R.id.iconType, "右转");
                 remoteView.setImageViewResource(R.id.directionImage, R.drawable.right);
-            }else {
+            } else {
                 remoteView.setTextViewText(R.id.iconType, "暂未定义");
                 remoteView.setImageViewResource(R.id.directionImage, R.drawable.default_icon);
             }
