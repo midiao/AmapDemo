@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AmapDemo</string>
+    <string name="gps_navi">实时路径规划</string>
+    <string name="hud_navi">HUD显示</string>
+</resources>

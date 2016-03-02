@@ -1,1 +1,4 @@
 # AmapDemo
+使用widget开发Amap小插件：当点击home键，界面从高德地图导航界面回到Launcher时，界面的widget依然会显示导航图标，并且更新。
+###原理：
+重写AMapNaviListener接口的onNaviInfoUpdate方法，每当NaviInfo发生变化时进行判断，然后发送广播通知Widget更新。
