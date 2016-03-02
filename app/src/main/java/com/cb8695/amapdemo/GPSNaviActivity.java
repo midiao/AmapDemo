@@ -22,6 +22,7 @@ import com.amap.api.navi.model.AMapNaviTrafficFacilityInfo;
 import com.amap.api.navi.model.NaviInfo;
 import com.amap.api.navi.model.NaviLatLng;
 import com.autonavi.tbt.TrafficFacilityInfo;
+import com.cb8695.amapdemo.util.TTSController;
 import com.cb8695.amapdemo.util.Utils;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class GPSNaviActivity extends Activity implements AMapNaviListener, AMapN
     private List<NaviLatLng> mStartList = new ArrayList<>();
     private List<NaviLatLng> mEndList = new ArrayList<>();
     private List<NaviLatLng> mWayPointList;
+    private TTSController mTtsManager;
 
     //记录上一次导航方向
     private int lastIconType = -1;
@@ -47,11 +49,17 @@ public class GPSNaviActivity extends Activity implements AMapNaviListener, AMapN
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_gpsnavi);
+
+        mTtsManager = TTSController.getInstance(getApplicationContext());
+        mTtsManager.init();
+        mTtsManager.startSpeaking();
+
         mAMapNaviView = (AMapNaviView) findViewById(R.id.navi_view);
         mAMapNaviView.onCreate(savedInstanceState);
         mAMapNaviView.setAMapNaviViewListener(this);
         mAMapNavi = AMapNavi.getInstance(getApplicationContext());
         mAMapNavi.addAMapNaviListener(this);
+        mAMapNavi.addAMapNaviListener(mTtsManager);
         mAMapNavi.setEmulatorNaviSpeed(150);
     }
 
@@ -104,7 +112,7 @@ public class GPSNaviActivity extends Activity implements AMapNaviListener, AMapN
 
     @Override
     public void onGetNavigationText(int i, String s) {
-
+        mTtsManager.playText(s);
     }
 
     @Override

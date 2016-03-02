@@ -21,6 +21,7 @@ import com.amap.api.navi.model.AMapNaviTrafficFacilityInfo;
 import com.amap.api.navi.model.NaviInfo;
 import com.amap.api.navi.model.NaviLatLng;
 import com.autonavi.tbt.TrafficFacilityInfo;
+import com.cb8695.amapdemo.util.TTSController;
 import com.cb8695.amapdemo.util.Utils;
 
 import java.util.ArrayList;
@@ -41,15 +42,22 @@ public class HUDNaviActivity extends Activity implements AMapHudViewListener, AM
 
     //记录上一次导航方向
     private int lastIconType = -1;
+    private TTSController mTtsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_hudnavi);
+
+        mTtsManager = TTSController.getInstance(getApplicationContext());
+        mTtsManager.init();
+        mTtsManager.startSpeaking();
 
         mAMapNavi = AMapNavi.getInstance(this);
         mAMapNavi.addAMapNaviListener(this);
         mAMapNavi.setEmulatorNaviSpeed(150);
-        setContentView(R.layout.activity_hudnavi);
+        mAMapNavi.addAMapNaviListener(mTtsManager);
+
         mAMapHudView = (AMapHudView) findViewById(R.id.hudview);
         mAMapHudView.setHudViewListener(this);
     }
@@ -121,7 +129,7 @@ public class HUDNaviActivity extends Activity implements AMapHudViewListener, AM
 
     @Override
     public void onGetNavigationText(int i, String s) {
-
+        mTtsManager.playText(s);
     }
 
     @Override
